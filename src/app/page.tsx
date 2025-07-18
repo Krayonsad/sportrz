@@ -614,3 +614,5 @@ const scrollSlider = (category: string, direction: 'left' | 'right') => {
     </div>
   );
 }
+
+//..
