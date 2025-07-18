@@ -100,9 +100,9 @@ export default function Navbar() {
 <div className="flex items-center">
   {/* Logo + Title */}
   <Link href="/" className="flex items-center space-x-2 group">
-    <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl">
-      <Crown className="w-6 h-6 text-white" />
-    </div>
+    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl overflow-hidden">
+  <img src="/Logo.png" alt="Sportrz Logo" className="w-full h-full object-contain" />
+</div>
     <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
       Sportrz
     </span>

@@ -8,11 +8,9 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                </svg>
-              </div>
+<div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
+  <img src="/Logo.png" alt="Sportrz Logo" className="w-full h-full object-contain" />
+</div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">Sportrz</span>
             </div>
             <p className="text-gray-600 dark:text-gray-300 mb-4 max-w-md">

@@ -236,534 +236,531 @@ Mode                 LastWriteTime         Length Name
 -a---          17-07-2025    00:55            709 notification.ts
 -a---          17-07-2025    01:04            561 user.ts
 
-This is my page.tsx:
+I have Logo.png in the public folder. I want to use it with Sportrz instead of that crown in the header and the electricity icon in the footer.
+
+This is my navbar.tsx:
+// src/components/Navbar.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import GameCard from '@/components/GameCard';
-import SearchBar from '@/components/SearchBar';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import Sidebar from '@/components/Sidebar';
-import { GameInfo } from '@/types/game';
-import { useSearch } from '@/contexts/SearchContext';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
+import { Menu, X, User, LogOut, Settings, Crown, Sparkles } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import Slider from '@/components/Slider';
+import SearchBar from '@/components/SearchBar';
+import { useSearch } from '@/contexts/SearchContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAdmin } from '@/contexts/AdminContext';
+import { Shield } from 'lucide-react'; // Add Shield icon
+import NotificationDropdown from '@/components/NotificationDropdown';
+import { useNotification } from '@/contexts/NotificationContext';
 
-export default function Home() {
-  const { searchTerm, setSearchTerm, setTotalGames, setFilteredCount } = useSearch();
-  const [games, setGames] = useState<GameInfo[]>([]);
-  const [filteredGames, setFilteredGames] = useState<GameInfo[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [topGames, setTopGames] = useState<GameInfo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [activeCategoryId, setActiveCategoryId] = useState<string>('');
 
-  // Refs for category sliders
-  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const topGamesRef = useRef<HTMLDivElement | null>(null);
-  const [showLeftArrow, setShowLeftArrow] = useState<Record<string, boolean>>({});
-  const [showRightArrow, setShowRightArrow] = useState<Record<string, boolean>>({});
+const AVATAR_OPTIONS = [
+  { id: 'avatar1', emoji: '🎮', name: 'Gamer' },
+  { id: 'avatar2', emoji: '🚀', name: 'Rocket' },
+  { id: 'avatar3', emoji: '⚡', name: 'Lightning' },
+  { id: 'avatar4', emoji: '🎯', name: 'Target' },
+  { id: 'avatar5', emoji: '🌟', name: 'Star' },
+];
 
+interface NavbarProps {
+  searchTerm: string;
+  onSearchChange: (term: string) => void;
+  totalGames: number;
+  filteredCount: number;
+}
+
+export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+  const { searchTerm, setSearchTerm } = useSearch();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [userAvatar, setUserAvatar] = useState('avatar1');
+  const [isLoadingAvatar, setIsLoadingAvatar] = useState(false);
+  const { currentUser, logout } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
+  const { showToast } = useToast();
+
+  // Load user avatar from Firebase
   useEffect(() => {
-    loadData();
-    // Trigger animations after component mounts
-    setTimeout(() => setIsVisible(true), 100);
-  }, []);
-
-  useEffect(() => {
-    filterGames();
-  }, [searchTerm, games]);
-
-  // Check scroll position for arrows
-  useEffect(() => {
-    const checkArrows = () => {
-      // Check top games slider
-      if (topGamesRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = topGamesRef.current;
-        setShowLeftArrow(prev => ({
-          ...prev,
-          'top-games': scrollLeft > 0
-        }));
-        setShowRightArrow(prev => ({
-          ...prev,
-          'top-games': scrollLeft < scrollWidth - clientWidth - 10
-        }));
+    const loadUserAvatar = async () => {
+      if (!currentUser) {
+        setUserAvatar('avatar1');
+        return;
       }
 
-      // Check category sliders
-      categories.forEach((category) => {
-        const slider = categoryRefs.current[category];
-        if (slider) {
-          const { scrollLeft, scrollWidth, clientWidth } = slider;
-          setShowLeftArrow(prev => ({
-            ...prev,
-            [category]: scrollLeft > 0
-          }));
-          setShowRightArrow(prev => ({
-            ...prev,
-            [category]: scrollLeft < scrollWidth - clientWidth - 10
-          }));
+      setIsLoadingAvatar(true);
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserAvatar(userData.avatar || 'avatar1');
+        } else {
+          setUserAvatar('avatar1');
         }
-      });
+      } catch (error) {
+        console.error('Error loading user avatar:', error);
+        setUserAvatar('avatar1');
+      } finally {
+        setIsLoadingAvatar(false);
+      }
     };
 
-    // Initial check
-    setTimeout(checkArrows, 100);
+    loadUserAvatar();
+  }, [currentUser]);
 
-    // Add scroll listeners
-    if (topGamesRef.current) {
-      topGamesRef.current.addEventListener('scroll', checkArrows);
-    }
-
-    categories.forEach((category) => {
-      const slider = categoryRefs.current[category];
-      if (slider) {
-        slider.addEventListener('scroll', checkArrows);
-      }
-    });
-
-    return () => {
-      if (topGamesRef.current) {
-        topGamesRef.current.removeEventListener('scroll', checkArrows);
-      }
-      categories.forEach((category) => {
-        const slider = categoryRefs.current[category];
-        if (slider) {
-          slider.removeEventListener('scroll', checkArrows);
-        }
-      });
-    };
-  }, [categories, games, topGames]);
-
-  // Intersection Observer for active category detection
-  useEffect(() => {
-    if (categories.length === 0 || isSearching) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const categoryId = entry.target.id.replace('category-', '');
-            setActiveCategoryId(categoryId);
-          }
-        });
-      },
-      {
-        rootMargin: '-100px 0px -70% 0px',
-        threshold: 0.1
-      }
-    );
-
-    // Observe top games section
-    const topGamesElement = document.getElementById('category-top-games');
-    if (topGamesElement) {
-      observer.observe(topGamesElement);
-    }
-
-    categories.forEach((category) => {
-      const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      const element = document.getElementById(`category-${categoryId}`);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, [categories, isSearching, topGames]);
-
-  // Helper function to extract numeric part from game ID for proper sorting
-  const extractNumericId = (gameId: string): number => {
-    // Extract number from ID like "arcade1", "arcade10", etc.
-    const match = gameId.match(/(\d+)$/);
-    return match ? parseInt(match[1], 10) : 0;
-  };
-
-  // Function to determine top games (you can customize this logic)
-  const getTopGames = (allGames: GameInfo[]): GameInfo[] => {
-    // Option 1: First 10 games
-    // return allGames.slice(0, 10);
-    
-    // Option 2: Games with specific IDs (customize as needed)
-    const topGameIds = ['arcade1', 'arcade5', 'arcade10', 'arcade4'];
-    return allGames.filter(game => topGameIds.includes(game.id));
-    
-    // Option 3: Random selection
-    // const shuffled = [...allGames].sort(() => 0.5 - Math.random());
-    // return shuffled.slice(0, 10);
-  };
-
-  const loadData = async () => {
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
-      // Import Firebase functions
-      const { collection, getDocs } = await import('firebase/firestore');
-      
-      // Fetch games from Firebase
-      const gamesSnapshot = await getDocs(collection(db, 'games'));
-      const gamesList: GameInfo[] = [];
-      gamesSnapshot.forEach((doc) => {
-        const data = doc.data();
-        gamesList.push({ 
-          id: data.id,  // Use the id field from the document data
-          name: data.name,
-          categories: data.categories,
-          path: data.path,
-          thumbnail: data.thumbnail
-        } as GameInfo);
-      });
-      
-      // Sort games by numeric ID to maintain proper order
-      gamesList.sort((a, b) => {
-        const numA = extractNumericId(a.id);
-        const numB = extractNumericId(b.id);
-        return numA - numB;
-      });
-      
-      setGames(gamesList);
-      setTotalGames(gamesList.length);
-      
-      // Set top games
-      setTopGames(getTopGames(gamesList));
-      
-      // Fetch categories from Firebase
-      const categoriesSnapshot = await getDocs(collection(db, 'categories'));
-      const categoriesList: string[] = [];
-      categoriesSnapshot.forEach((doc) => {
-        categoriesList.push(doc.data().name); // Assuming category documents have a 'name' field
-      });
-      
-      setCategories(categoriesList);
-      setFilteredGames(gamesList);
+      await logout();
+      setIsOpen(false);
+      setUserAvatar('avatar1'); // Reset avatar on logout
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error('Logout failed:', error);
+      showToast('Failed to logout. Please try again.', 'error');
     } finally {
-      setLoading(false);
+      setIsLoggingOut(false);
     }
   };
 
-  const filterGames = () => {
-    if (!searchTerm) {
-      setFilteredGames(games);
-      setFilteredCount(games.length);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    const filtered = games.filter(game =>
-      game.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.id.toString().includes(searchTerm) ||
-      game.categories.some((cat: string) => cat.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-
-    setFilteredGames(filtered);
-    setFilteredCount(filtered.length);
+  const getAvatarEmoji = (avatarId: string) => {
+    const avatar = AVATAR_OPTIONS.find(a => a.id === avatarId);
+    return avatar ? avatar.emoji : '🎮';
   };
-
-  const getGamesByCategory = (category: string) => {
-    // Get games for the category and maintain the sorted order
-    return games.filter(game => game.categories.includes(category));
-  };
-
-  const handleCategoryClick = (category: string) => {
-    if (isSearching) {
-      setSearchTerm('');
-    }
-  };
-
-  const scrollSlider = (category: string, direction: 'left' | 'right') => {
-    const slider = category === 'top-games' ? topGamesRef.current : categoryRefs.current[category];
-    if (!slider) return;
-
-    const cardWidth = 200; // Approximate card width
-    const gap = 16; // Gap between cards
-    const scrollAmount = (cardWidth + gap) * 3; // Scroll 3 cards at a time
-
-    const newScrollLeft = direction === 'left' 
-      ? slider.scrollLeft - scrollAmount 
-      : slider.scrollLeft + scrollAmount;
-
-    slider.scrollTo({
-      left: newScrollLeft,
-      behavior: 'smooth'
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
-        <LoadingSpinner />
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
-      {/* Animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute -top-40 left-1/2 transform -translate-x-1/2 w-80 h-80 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-      </div>
+    <nav className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-white/20 dark:border-gray-700/50 sticky top-0 z-40">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+  {/* Left Side: Logo + Search */}
+<div className="flex items-center">
+  {/* Logo + Title */}
+  <Link href="/" className="flex items-center space-x-2 group">
+    <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl">
+      <Crown className="w-6 h-6 text-white" />
+    </div>
+    <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      Sportrz
+    </span>
+  </Link>
 
-      <div className="relative flex">
-        {/* Sidebar - Hidden on mobile (lg breakpoint and up) */}
-        <div className="hidden lg:block">
-          <Sidebar 
-            categories={categories} 
-            onCategoryClick={handleCategoryClick}
-            activeCategoryId={activeCategoryId}
-          />
-        </div>
+  {/* 👇 Push search bar farther right */}
+  <div className="hidden md:block relative ml-28"> {/* change ml-16 to ml-20 or more if needed */}
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg className="h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+    <input
+      type="text"
+      placeholder="Search games..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-96 pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+    />
+  </div>
+</div>
 
-        {/* Main Content */}
-        <div className="flex-1 w-full">
-          {/* Main Content Container */}
-          <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-            {/* Image Slider */}
-            <div className="mb-6 sm:mb-8">
-              <Slider />
-            </div>
-            
-            {/* Search Results or Category View */}
-            {isSearching ? (
-              <div className={`transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
-                  <div className="flex items-center space-x-3 sm:space-x-4">
-                    <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                        Search Results
-                      </h2>
-                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                        Found {filteredGames.length} games matching "{searchTerm}"
-                      </p>
-                    </div>
+
+
+  {/* Right Side: Theme toggle, Premium button, Auth controls */}
+  <div className="hidden md:flex items-center space-x-8">
+    {/* Theme toggle, Premium Plans, Login/Signup/User info */}
+
+            <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? (
+              <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            )}
+          </button>
+
+          {currentUser && <NotificationDropdown />}
+
+{/* Admin Panel Button - Only show for admins */}
+{currentUser && isAdmin && !adminLoading && (
+  <Link
+    href="/admin"
+    className="group relative flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+  >
+    <Shield className="w-4 h-4 group-hover:animate-pulse" />
+    <span>Admin Panel</span>
+  </Link>
+)}
+
+
+            {/* Premium Plans Button */}
+            <Link
+              href="/plans"
+              className="group relative flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+            >
+              <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+              <span>Premium Plans</span>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            </Link>
+
+            {currentUser ? (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/profile"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/50 dark:to-purple-900/50 border border-indigo-200 dark:border-indigo-700 hover:from-indigo-100 hover:to-purple-100 dark:hover:from-indigo-800/50 dark:hover:to-purple-800/50 transition-all duration-200 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-lg group-hover:scale-105 transition-transform duration-200">
+                    {isLoadingAvatar ? (
+                      <div className="w-4 h-4 border-2 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin"></div>
+                    ) : (
+                      getAvatarEmoji(userAvatar)
+                    )}
                   </div>
-                  <button
-                    onClick={() => setSearchTerm('')}
-                    className="group flex items-center justify-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md w-full sm:w-auto"
-                  >
-                    <svg className="w-4 h-4 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Clear Search</span>
-                  </button>
-                </div>
-                
-                {filteredGames.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-                    {filteredGames.map((game: GameInfo, index) => (
-                      <div
-                        key={game.id}
-                        className={`transform transition-all duration-500 ${
-                          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                        }`}
-                        style={{ transitionDelay: `${index * 50}ms` }}
-                      >
-                        <GameCard game={game} />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12 sm:py-16 px-4">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                      <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">No games found</h3>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 max-w-md mx-auto">
-                      We couldn't find any games matching your search. Try different keywords or browse our categories.
-                    </p>
-                    <button
-                      onClick={() => setSearchTerm('')}
-                      className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
-                    >
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                      </svg>
-                      Browse All Games
-                    </button>
-                  </div>
-                )}
+                  <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                    {currentUser.displayName || currentUser.email?.split('@')[0]}
+                  </span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="group relative flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isLoggingOut ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Signing out...</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign out</span>
+                    </>
+                  )}
+                </button>
               </div>
             ) : (
-              /* Category Sections */
-              <div className="space-y-8 sm:space-y-12">
-                {/* Top Games Section */}
-                {topGames.length > 0 && (
-                  <div 
-                    className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
-                      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                    }`}
-                    style={{ transitionDelay: '0ms' }}
-                    id="category-top-games"
-                  >
-                    {/* Top Games Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 sm:space-x-4">
-                        <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
-                        <div>
-                          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-                            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            Top Games
-                          </h2>
-                          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                            Our most popular games
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Top Games Slider Container */}
-                    <div className="relative group">
-                      {/* Left Arrow */}
-                      <button
-                        onClick={() => scrollSlider('top-games', 'left')}
-                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                          showLeftArrow['top-games'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
-                        } group-hover:opacity-100 group-hover:translate-x-0`}
-                      >
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-
-                      {/* Right Arrow */}
-                      <button
-                        onClick={() => scrollSlider('top-games', 'right')}
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                          showRightArrow['top-games'] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
-                        } group-hover:opacity-100 group-hover:translate-x-0`}
-                      >
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-
-                      {/* Top Games Slider */}
-                      <div
-                        ref={topGamesRef}
-                        className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
-                        style={{
-                          scrollbarWidth: 'none',         // Firefox
-                          msOverflowStyle: 'none',        // IE/Edge
-                        }}
-                      >
-                        {topGames.map((game: GameInfo, index) => (
-                          <div
-                            key={game.id}
-                            className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
-                              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                            }`}
-                            style={{ transitionDelay: `${index * 50}ms` }}
-                          >
-                            <GameCard game={game} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Regular Category Sections */}
-                {categories.map((category, categoryIndex) => {
-                  const categoryGames = getGamesByCategory(category);
-                  const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-
-                  if (categoryGames.length === 0) return null;
-
-                  return (
-                    <div 
-                      key={category} 
-                      className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
-                        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                      }`}
-                      style={{ transitionDelay: `${(categoryIndex + 1) * 100}ms` }}
-                      id={`category-${categoryId}`}
-                    >
-                      {/* Category Header */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3 sm:space-x-4">
-                          <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
-                          <div>
-                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                              {category}
-                            </h2>
-                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                              {categoryGames.length} game{categoryGames.length !== 1 ? 's' : ''} available
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Games Slider Container */}
-                      <div className="relative group">
-                        {/* Left Arrow */}
-                        <button
-                          onClick={() => scrollSlider(category, 'left')}
-                          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                            showLeftArrow[category] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
-                          } group-hover:opacity-100 group-hover:translate-x-0`}
-                        >
-                          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-
-                        {/* Right Arrow */}
-                        <button
-                          onClick={() => scrollSlider(category, 'right')}
-                          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                            showRightArrow[category] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
-                          } group-hover:opacity-100 group-hover:translate-x-0`}
-                        >
-                          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-
-                        {/* Games Slider */}
-                        <div
-                          ref={(el) => {
-                            if (el) categoryRefs.current[category] = el;
-                          }}
-                          className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
-                          style={{
-                            scrollbarWidth: 'none',         // Firefox
-                            msOverflowStyle: 'none',        // IE/Edge
-                          }}
-                        >
-                          {categoryGames.map((game: GameInfo, index) => (
-                            <div
-                              key={game.id}
-                              className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
-                                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                              }`}
-                              style={{ transitionDelay: `${((categoryIndex + 1) * 100) + (index * 50)}ms` }}
-                            >
-                              <GameCard game={game} />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/login"
+                  className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+                >
+                  Sign up
+                </Link>
               </div>
             )}
-          </main>
+          </div>
+          
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-md transition-colors"
+            >
+              {isOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg mt-2 shadow-lg border border-white/20 dark:border-gray-700/50">
+              <Link
+                href="/"
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/about"
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="block text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+              {/* Admin Panel Button for Mobile */}
+{currentUser && isAdmin && !adminLoading && (
+  <Link
+    href="/admin"
+    className="block w-full text-center bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+    onClick={() => setIsOpen(false)}
+  >
+    <div className="flex items-center justify-center space-x-2">
+      <Shield className="w-4 h-4" />
+      <span>Admin Panel</span>
     </div>
+  </Link>
+)}
+              {/* Premium Plans Button for Mobile */}
+              <Link
+                href="/plans"
+                className="block w-full text-center bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Premium Plans</span>
+                </div>
+              </Link>
+
+              {currentUser ? (
+                <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+                  <Link
+                    href="/profile"
+                    className="flex items-center px-3 py-2 mb-3 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/50 dark:to-purple-900/50 border border-indigo-200 dark:border-indigo-700 hover:from-indigo-100 hover:to-purple-100 dark:hover:from-indigo-800/50 dark:hover:to-purple-800/50 transition-all duration-200"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-lg mr-3">
+                      {isLoadingAvatar ? (
+                        <div className="w-4 h-4 border-2 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin"></div>
+                      ) : (
+                        getAvatarEmoji(userAvatar)
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                      {currentUser.displayName || currentUser.email?.split('@')[0]}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="w-full group relative flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isLoggingOut ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Signing out...</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign out</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                  <Link
+                    href="/login"
+                    className="block w-full text-center px-4 py-2 rounded-lg border border-indigo-600 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 text-sm font-medium transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
   );
 }
 
-I want to implement this functionality:
-1. When there's no game to scroll and look for in the left, the left button should not appear.
-2. When there's no game to scroll and look for in the right, the right button should not appear.
-3. When there's no game to scroll and look for in both directions, both should not appear. (I mean if 1 and 2 are implemented, then this should be implemented as well on its own)
+This is my footer.tsx:
+import Link from 'next/link';
+
+export default function Footer() {
+  return (
+    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand Section */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">Sportrz</span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 max-w-md">
+              Your ultimate destination for HTML games. Discover, play, and enjoy hundreds of games right in your browser.
+            </p>
+            <div className="flex space-x-4">
+              {/* Facebook */}
+              <a
+                href="https://www.facebook.com/AdKrayons/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                aria-label="Facebook"
+              >
+                <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              </a>
+
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/adkrayons/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                aria-label="Instagram"
+              >
+                <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              </a>
+
+              {/* X (Twitter) */}
+              <a
+                href="https://x.com/KrayonsAds"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative bg-gray-800 hover:bg-black text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                aria-label="X (Twitter)"
+              >
+                <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              </a>
+
+              {/* LinkedIn */}
+              <a
+                href="https://www.linkedin.com/company/krayons-group/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative bg-blue-700 hover:bg-blue-800 text-white p-3 rounded-lg transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                aria-label="LinkedIn"
+              >
+                <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+              </a>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              Navigation
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/plans" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Plans
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support & Legal */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              Support & Legal
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/help" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link href="/feedback" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Feedback & Reviews
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/cancellation" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Cancellation Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Disclaimer
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
+              <p>&copy; 2025 Sportrz. All rights reserved.</p>
+              <span className="hidden md:inline">•</span>
+              <p className="hidden md:inline">Built with Next.js and Tailwind CSS</p>
+            </div>
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+              <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>All systems operational</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+If major changes are not there, just tell me what changes to make and where. 
