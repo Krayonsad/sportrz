@@ -1,446 +1,151 @@
 I am working on a nextjs website. It's called Sportrz. It's basically netflix for games. Works on subscription based model for playing games. The home page has a catalogue of games arranged according to their catageories. It also has a side bar. 
 
-This is the directrory of the src folder:
-Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d----          18-07-2025    11:56                app
-d----          18-07-2025    11:56                components
-d----          18-07-2025    11:56                contexts
-d----          18-07-2025    11:56                hooks
-d----          18-07-2025    11:56                lib
-d----          18-07-2025    11:56                types
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d----          18-07-2025    11:56                about
-d----          18-07-2025    11:56                admin
-d----          18-07-2025    11:56                api
-d----          18-07-2025    11:56                cancellation
-d----          18-07-2025    11:56                contact
-d----          18-07-2025    11:56                disclaimer
-d----          18-07-2025    11:56                feedback
-d----          18-07-2025    11:56                game
-d----          18-07-2025    11:56                help
-d----          18-07-2025    11:56                login
-d----          18-07-2025    11:56                plans
-d----          18-07-2025    11:56                privacy
-d----          18-07-2025    11:56                profile
-d----          18-07-2025    11:56                refund
-d----          18-07-2025    11:56                signup
-d----          18-07-2025    11:56                terms
-d----          18-07-2025    11:56                verify-email
--a---          10-07-2025    14:23          25931 favicon.ico
--a---          12-07-2025    11:53           9511 globals.css
--a---          17-07-2025    01:07           1933 layout.tsx
--a---          10-07-2025    14:23           2747 page.module.css
--a---          18-07-2025    01:04          15559 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\about
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          18-07-2025    00:01          11443 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\admin
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          18-07-2025    00:04           5106 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\api
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d----          18-07-2025    11:56                create-order
-d----          18-07-2025    11:56                feedback
-d----          18-07-2025    11:56                games
-d----          18-07-2025    11:56                verify-payment
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\api\create-order
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    22:31           2489 route.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\api\feedback
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    17:07           1995 route.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\api\games
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          18-07-2025    00:35            560 route.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\api\verify-payment
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    02:18           3762 route.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\cancellation
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    23:59          10039 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\contact
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    16:47          10153 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\disclaimer
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    23:59          11248 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\feedback
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    17:01            124 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\game
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d----          18-07-2025    11:56                [id]
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\game\[id]
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    02:41          21204 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\help
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          11-07-2025    09:48          13495 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\login
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    21:35          17037 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\plans
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    22:27          16515 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\privacy
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    23:54          15855 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\profile
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    02:44          14486 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\refund
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    23:54           8488 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\signup
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          16-07-2025    20:54          13570 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\terms
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          11-07-2025    09:28           8265 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\app\verify-email
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          16-07-2025    20:55           6042 page.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\components
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    16:47          13232 ContactMessages.tsx
--a---          12-07-2025    17:14          13860 FeedbackPage.tsx
--a---          16-07-2025    22:32           8323 Footer.tsx
--a---          18-07-2025    01:00           3333 GameCard.tsx
--a---          14-07-2025    16:30            629 LoadingSpinner.tsx
--a---          17-07-2025    02:44          17037 Navbar.tsx
--a---          17-07-2025    01:01           7002 NotificationDropdown.tsx
--a---          17-07-2025    00:24           8183 RecentlyPlayedGames.tsx
--a---          11-07-2025    08:56           2757 SearchBar.tsx
--a---          16-07-2025    23:07           6790 Sidebar.tsx
--a---          16-07-2025    22:17           4142 Slider.tsx
--a---          18-07-2025    01:41           6432 SubscriptionGuard.tsx
--a---          17-07-2025    02:35           1041 SubscriptionStatus.tsx
--a---          11-07-2025    08:46           1275 ThemeToggle.tsx
--a---          11-07-2025    21:36           2939 Toast.tsx
--a---          11-07-2025    21:25            658 ToastContainer.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\contexts
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    12:23           1755 AdminContext.tsx
--a---          17-07-2025    21:33           5346 AuthContext.tsx
--a---          12-07-2025    17:07           1857 FeedbackContext.tsx
--a---          17-07-2025    01:01           5528 NotificationContext.tsx
--a---          12-07-2025    10:24           1111 SearchContext.tsx
--a---          17-07-2025    02:31           5974 SubscriptionContext.tsx
--a---          11-07-2025    08:57           1511 ThemeContext.tsx
--a---          11-07-2025    21:25           1648 ToastContext.tsx
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\hooks
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          17-07-2025    13:37           4321 useGameTimer.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\lib
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    16:47           7080 contactService.ts
--a---          12-07-2025    17:05           3069 feedbackService.ts
--a---          18-07-2025    01:42            995 firebase.ts
--a---          12-07-2025    17:15           9597 firebaseService.ts
--a---          18-07-2025    00:34           1910 gameConfig.ts
--a---          17-07-2025    00:23           3704 gameTrackingService.ts
--a---          17-07-2025    00:58           4982 notificationService.ts
--a---          17-07-2025    22:27           2611 razorpay.ts
-
-    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 30\src\types
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a---          12-07-2025    16:46            523 contact.ts
--a---          18-07-2025    00:35            284 game.ts
--a---          17-07-2025    00:55            709 notification.ts
--a---          17-07-2025    01:04            561 user.ts
-
-When I try to login/signpup and things on localhost:3000, they are working. But when I try to login/signpup on 192.168.1.10:3000, I get this error:
-Firebase: Error (auth/unauthorized-domain).
-
-This is my firebase.ts:
-// src/lib/firebase.ts
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getAnalytics } from 'firebase/analytics';
-
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!,
-};
-
-const app = initializeApp(firebaseConfig);
-
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-export const googleProvider = new GoogleAuthProvider();
-
-export default app;
-
-This is my AuthContext.tsx:
-// src/contexts/AuthContext.tsx
-'use client';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { googleProvider } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { 
-  User, 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  updateProfile,
-  sendEmailVerification,
-  sendPasswordResetEmail 
-} from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useToast } from './ToastContext';
-
-// Add this to the AuthContextType interface
-interface AuthContextType {
-  currentUser: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  signup: (email: string, password: string, displayName: string) => Promise<void>;
-  logout: () => Promise<void>;
-  resendVerificationEmail: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>; // Add this line
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { showToast } = useToast();
-  const router = useRouter();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
-
-const login = async (email: string, password: string) => {
-  try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    const user = result.user;
-    
-    // Check if email is verified
-    if (!user.emailVerified) {
-      await signOut(auth); // Sign out unverified user
-      throw new Error('Please verify your email before logging in. Check your inbox for the verification link.');
-    }
-    
-    // Show success toast with user's name or email
-    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-    showToast(`Welcome back, ${displayName}!`, 'success', 4000);
-    
-  } catch (error) {
-    // Re-throw error to be handled by the login component
-    throw error;
-  }
-};
-
-const signup = async (email: string, password: string, displayName: string) => {
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    
-    // Update the user's profile with display name
-    await updateProfile(result.user, {
-      displayName: displayName
-    });
-    
-    // Send verification email
-    await sendEmailVerification(result.user);
-    
-    // Sign out the user immediately after signup - THIS IS THE KEY CHANGE
-    await signOut(auth);
-    
-    // Show success toast
-    showToast(`Account created! Please check your email to verify your account.`, 'success', 6000);
-    
-  } catch (error) {
-    // Re-throw error to be handled by the signup component
-    throw error;
-  }
-};
-
-  const logout = async () => {
-  try {
-    const userName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'User';
-    
-    await signOut(auth);
-    
-    // Redirect to home page after logout
-    router.push('/');
-    
-    // Show success toast after logout
-    showToast(`Goodbye, ${userName}! You've been signed out successfully.`, 'success', 4000);
-    
-  } catch (error) {
-    console.error('Error signing out:', error);
-    showToast('Failed to sign out. Please try again.', 'error', 4000);
-    throw error;
-  }
-};
-
-  const resendVerificationEmail = async () => {
-  try {
-    // We need to temporarily sign in to get the user object
-    if (!currentUser) {
-      throw new Error('No user found. Please sign up first.');
-    }
-    
-    await sendEmailVerification(currentUser);
-    showToast('Verification email sent! Please check your inbox.', 'success', 4000);
-    
-  } catch (error) {
-    console.error('Error sending verification email:', error);
-    throw error;
-  }
-};
-
-  // Add this function inside the AuthProvider component
-const loginWithGoogle = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    
-    const displayName = user.displayName || user.email?.split('@')[0] || 'User';
-    showToast(`Welcome, ${displayName}!`, 'success', 4000);
-    
-  } catch (error) {
-    throw error;
-  }
-};
-
-const resetPassword = async (email: string) => {
-  try {
-    await sendPasswordResetEmail(auth, email);
-    showToast('Password reset email sent! Please check your inbox.', 'success', 6000);
-  } catch (error) {
-    console.error('Error sending password reset email:', error);
-    throw error;
-  }
-};
-
-const value: AuthContextType = {
-  currentUser,
-  loading,
-  login,
-  loginWithGoogle,
-  signup,
-  logout,
-  resendVerificationEmail,
-  resetPassword // Add this line
-};
-
+These are the socials:
+https://www.facebook.com/AdKrayons/
+https://www.instagram.com/adkrayons/
+https://x.com/KrayonsAds
+https://www.linkedin.com/company/krayons-group/
+
+This is my footer.tsx:
+import Link from 'next/link';
+
+export default function Footer() {
   return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand Section */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">Sportrz</span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 max-w-md">
+              Your ultimate destination for HTML games. Discover, play, and enjoy hundreds of games right in your browser.
+            </p>
+            <div className="flex space-x-4">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                aria-label="Twitter"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                aria-label="GitHub"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                aria-label="Discord"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M16.942 5.556a16.3 16.3 0 00-4.126-1.3 12.04 12.04 0 00-.529 1.1 15.175 15.175 0 00-4.573 0 11.585 11.585 0 00-.535-1.1 16.274 16.274 0 00-4.129 1.3A17.392 17.392 0 00.182 13.218a15.785 15.785 0 004.963 2.521c.41-.564.773-1.16 1.084-1.785a10.63 10.63 0 01-1.706-.83c.143-.106.283-.217.418-.33a11.664 11.664 0 0010.118 0c.137.113.277.224.418.33-.544.328-1.116.606-1.71.832a12.52 12.52 0 001.084 1.785 16.46 16.46 0 005.064-2.595 17.286 17.286 0 00-2.973-7.737zM6.678 10.813a1.941 1.941 0 01-1.8-2.045 1.93 1.93 0 011.8-2.047 1.919 1.919 0 011.8 2.047 1.93 1.93 0 01-1.8 2.045zm6.644 0a1.94 1.94 0 01-1.8-2.045 1.93 1.93 0 011.8-2.047 1.918 1.918 0 011.8 2.047 1.93 1.93 0 01-1.8 2.045z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              Navigation
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/about" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/plans" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Plans
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support & Legal */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              Support & Legal
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/help" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link href="/feedback" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Feedback & Reviews
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/cancellation" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Cancellation Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Disclaimer
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
+              <p>&copy; 2025 Sportrz. All rights reserved.</p>
+              <span className="hidden md:inline">•</span>
+              <p className="hidden md:inline">Built with Next.js and Tailwind CSS</p>
+            </div>
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+              <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>All systems operational</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
-
-Tell me if you find any issues here, if not tell me where can you probably find errors, I'll give you those codes. If found the error, please fix it.
+Change the socials. Ensure the social buttons are colorful, have hover effects, some animations and proper. 
