@@ -15,6 +15,7 @@ export default function Home() {
   const [games, setGames] = useState<GameInfo[]>([]);
   const [filteredGames, setFilteredGames] = useState<GameInfo[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [topGames, setTopGames] = useState<GameInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -22,6 +23,7 @@ export default function Home() {
 
   // Refs for category sliders
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const topGamesRef = useRef<HTMLDivElement | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState<Record<string, boolean>>({});
   const [showRightArrow, setShowRightArrow] = useState<Record<string, boolean>>({});
 
@@ -35,45 +37,136 @@ export default function Home() {
     filterGames();
   }, [searchTerm, games]);
 
-  // Check scroll position for arrows
-  useEffect(() => {
-    const checkArrows = () => {
-      categories.forEach((category) => {
-        const slider = categoryRefs.current[category];
-        if (slider) {
-          const { scrollLeft, scrollWidth, clientWidth } = slider;
-          setShowLeftArrow(prev => ({
-            ...prev,
-            [category]: scrollLeft > 0
-          }));
-          setShowRightArrow(prev => ({
-            ...prev,
-            [category]: scrollLeft < scrollWidth - clientWidth - 10
-          }));
-        }
-      });
-    };
+// Enhanced scroll arrow logic - replace the existing useEffect for checking arrows
 
-    // Initial check
-    setTimeout(checkArrows, 100);
+useEffect(() => {
+  const checkArrows = () => {
+    // Check top games slider
+    if (topGamesRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = topGamesRef.current;
+      const canScrollLeft = scrollLeft > 5; // Small buffer for better UX
+      const canScrollRight = scrollLeft < scrollWidth - clientWidth - 5; // Small buffer
+      
+      setShowLeftArrow(prev => ({
+        ...prev,
+        'top-games': canScrollLeft
+      }));
+      setShowRightArrow(prev => ({
+        ...prev,
+        'top-games': canScrollRight
+      }));
+    }
 
-    // Add scroll listeners
+    // Check category sliders
     categories.forEach((category) => {
       const slider = categoryRefs.current[category];
       if (slider) {
-        slider.addEventListener('scroll', checkArrows);
+        const { scrollLeft, scrollWidth, clientWidth } = slider;
+        const canScrollLeft = scrollLeft > 5; // Small buffer for better UX
+        const canScrollRight = scrollLeft < scrollWidth - clientWidth - 5; // Small buffer
+        
+        setShowLeftArrow(prev => ({
+          ...prev,
+          [category]: canScrollLeft
+        }));
+        setShowRightArrow(prev => ({
+          ...prev,
+          [category]: canScrollRight
+        }));
       }
     });
+  };
 
-    return () => {
-      categories.forEach((category) => {
-        const slider = categoryRefs.current[category];
-        if (slider) {
-          slider.removeEventListener('scroll', checkArrows);
+  // Initial check with a delay to ensure DOM is ready
+  const timeoutId = setTimeout(checkArrows, 200);
+
+  // Add scroll listeners
+  const scrollListeners: (() => void)[] = [];
+
+  if (topGamesRef.current) {
+    const handleScroll = () => checkArrows();
+    topGamesRef.current.addEventListener('scroll', handleScroll);
+    scrollListeners.push(() => {
+      if (topGamesRef.current) {
+        topGamesRef.current.removeEventListener('scroll', handleScroll);
+      }
+    });
+  }
+
+  categories.forEach((category) => {
+    const slider = categoryRefs.current[category];
+    if (slider) {
+      const handleScroll = () => checkArrows();
+      slider.addEventListener('scroll', handleScroll);
+      scrollListeners.push(() => {
+        if (categoryRefs.current[category]) {
+          categoryRefs.current[category]?.removeEventListener('scroll', handleScroll);
         }
       });
-    };
-  }, [categories, games]);
+    }
+  });
+
+  // Also check on window resize
+  const handleResize = () => {
+    setTimeout(checkArrows, 100);
+  };
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    clearTimeout(timeoutId);
+    scrollListeners.forEach(cleanup => cleanup());
+    window.removeEventListener('resize', handleResize);
+  };
+}, [categories, games, topGames]);
+
+// Additional useEffect to handle initial arrow states when data loads
+useEffect(() => {
+  if (games.length > 0 && categories.length > 0) {
+    // Check arrows after data is loaded and DOM is updated
+    const timeoutId = setTimeout(() => {
+      const checkArrows = () => {
+        // Check top games slider
+        if (topGamesRef.current) {
+          const { scrollLeft, scrollWidth, clientWidth } = topGamesRef.current;
+          const canScrollLeft = scrollLeft > 5;
+          const canScrollRight = scrollLeft < scrollWidth - clientWidth - 5;
+          
+          setShowLeftArrow(prev => ({
+            ...prev,
+            'top-games': canScrollLeft
+          }));
+          setShowRightArrow(prev => ({
+            ...prev,
+            'top-games': canScrollRight
+          }));
+        }
+
+        // Check category sliders
+        categories.forEach((category) => {
+          const slider = categoryRefs.current[category];
+          if (slider) {
+            const { scrollLeft, scrollWidth, clientWidth } = slider;
+            const canScrollLeft = scrollLeft > 5;
+            const canScrollRight = scrollLeft < scrollWidth - clientWidth - 5;
+            
+            setShowLeftArrow(prev => ({
+              ...prev,
+              [category]: canScrollLeft
+            }));
+            setShowRightArrow(prev => ({
+              ...prev,
+              [category]: canScrollRight
+            }));
+          }
+        });
+      };
+
+      checkArrows();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }
+}, [games, categories, topGames]);
 
   // Intersection Observer for active category detection
   useEffect(() => {
@@ -94,6 +187,12 @@ export default function Home() {
       }
     );
 
+    // Observe top games section
+    const topGamesElement = document.getElementById('category-top-games');
+    if (topGamesElement) {
+      observer.observe(topGamesElement);
+    }
+
     categories.forEach((category) => {
       const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       const element = document.getElementById(`category-${categoryId}`);
@@ -103,7 +202,28 @@ export default function Home() {
     });
 
     return () => observer.disconnect();
-  }, [categories, isSearching]);
+  }, [categories, isSearching, topGames]);
+
+  // Helper function to extract numeric part from game ID for proper sorting
+  const extractNumericId = (gameId: string): number => {
+    // Extract number from ID like "arcade1", "arcade10", etc.
+    const match = gameId.match(/(\d+)$/);
+    return match ? parseInt(match[1], 10) : 0;
+  };
+
+  // Function to determine top games (you can customize this logic)
+  const getTopGames = (allGames: GameInfo[]): GameInfo[] => {
+    // Option 1: First 10 games
+    // return allGames.slice(0, 10);
+    
+    // Option 2: Games with specific IDs (customize as needed)
+    const topGameIds = ['arcade1', 'arcade5', 'arcade10', 'arcade4'];
+    return allGames.filter(game => topGameIds.includes(game.id));
+    
+    // Option 3: Random selection
+    // const shuffled = [...allGames].sort(() => 0.5 - Math.random());
+    // return shuffled.slice(0, 10);
+  };
 
   const loadData = async () => {
     try {
@@ -124,8 +244,18 @@ export default function Home() {
         } as GameInfo);
       });
       
+      // Sort games by numeric ID to maintain proper order
+      gamesList.sort((a, b) => {
+        const numA = extractNumericId(a.id);
+        const numB = extractNumericId(b.id);
+        return numA - numB;
+      });
+      
       setGames(gamesList);
       setTotalGames(gamesList.length);
+      
+      // Set top games
+      setTopGames(getTopGames(gamesList));
       
       // Fetch categories from Firebase
       const categoriesSnapshot = await getDocs(collection(db, 'categories'));
@@ -163,6 +293,7 @@ export default function Home() {
   };
 
   const getGamesByCategory = (category: string) => {
+    // Get games for the category and maintain the sorted order
     return games.filter(game => game.categories.includes(category));
   };
 
@@ -172,23 +303,40 @@ export default function Home() {
     }
   };
 
-  const scrollSlider = (category: string, direction: 'left' | 'right') => {
-    const slider = categoryRefs.current[category];
-    if (!slider) return;
+// Enhanced scroll function with arrow state update
+const scrollSlider = (category: string, direction: 'left' | 'right') => {
+  const slider = category === 'top-games' ? topGamesRef.current : categoryRefs.current[category];
+  if (!slider) return;
 
-    const cardWidth = 200; // Approximate card width
-    const gap = 16; // Gap between cards
-    const scrollAmount = (cardWidth + gap) * 3; // Scroll 3 cards at a time
+  const cardWidth = 200; // Approximate card width
+  const gap = 16; // Gap between cards
+  const scrollAmount = (cardWidth + gap) * 3; // Scroll 3 cards at a time
 
-    const newScrollLeft = direction === 'left' 
-      ? slider.scrollLeft - scrollAmount 
-      : slider.scrollLeft + scrollAmount;
+  const newScrollLeft = direction === 'left' 
+    ? Math.max(0, slider.scrollLeft - scrollAmount)
+    : slider.scrollLeft + scrollAmount;
 
-    slider.scrollTo({
-      left: newScrollLeft,
-      behavior: 'smooth'
-    });
-  };
+  slider.scrollTo({
+    left: newScrollLeft,
+    behavior: 'smooth'
+  });
+
+  // Update arrow states after scroll animation
+  setTimeout(() => {
+    const { scrollLeft, scrollWidth, clientWidth } = slider;
+    const canScrollLeft = scrollLeft > 5;
+    const canScrollRight = scrollLeft < scrollWidth - clientWidth - 5;
+    
+    setShowLeftArrow(prev => ({
+      ...prev,
+      [category]: canScrollLeft
+    }));
+    setShowRightArrow(prev => ({
+      ...prev,
+      [category]: canScrollRight
+    }));
+  }, 300); // Wait for scroll animation to complete
+};
 
   if (loading) {
     return (
@@ -292,6 +440,85 @@ export default function Home() {
             ) : (
               /* Category Sections */
               <div className="space-y-8 sm:space-y-12">
+                {/* Top Games Section */}
+                {topGames.length > 0 && (
+                  <div 
+                    className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
+                      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                    }`}
+                    style={{ transitionDelay: '0ms' }}
+                    id="category-top-games"
+                  >
+                    {/* Top Games Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
+                        <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
+                        <div>
+                          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Top Games
+                          </h2>
+                          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                            Our most popular games
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Top Games Slider Container */}
+                    <div className="relative group">
+{showLeftArrow['top-games'] && (
+  <button
+    onClick={() => scrollSlider('top-games', 'left')}
+    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label="Scroll left"
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+)}
+
+{showRightArrow['top-games'] && (
+  <button
+    onClick={() => scrollSlider('top-games', 'right')}
+    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label="Scroll right"
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+)}
+
+                      {/* Top Games Slider */}
+                      <div
+                        ref={topGamesRef}
+                        className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
+                        style={{
+                          scrollbarWidth: 'none',         // Firefox
+                          msOverflowStyle: 'none',        // IE/Edge
+                        }}
+                      >
+                        {topGames.map((game: GameInfo, index) => (
+                          <div
+                            key={game.id}
+                            className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
+                              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                            }`}
+                            style={{ transitionDelay: `${index * 50}ms` }}
+                          >
+                            <GameCard game={game} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Regular Category Sections */}
                 {categories.map((category, categoryIndex) => {
                   const categoryGames = getGamesByCategory(category);
                   const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
@@ -304,7 +531,7 @@ export default function Home() {
                       className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
                         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                       }`}
-                      style={{ transitionDelay: `${categoryIndex * 100}ms` }}
+                      style={{ transitionDelay: `${(categoryIndex + 1) * 100}ms` }}
                       id={`category-${categoryId}`}
                     >
                       {/* Category Header */}
@@ -324,48 +551,48 @@ export default function Home() {
 
                       {/* Games Slider Container */}
                       <div className="relative group">
-                        {/* Left Arrow */}
-                        <button
-                          onClick={() => scrollSlider(category, 'left')}
-                          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                            showLeftArrow[category] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
-                          } group-hover:opacity-100 group-hover:translate-x-0`}
-                        >
-                          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
+{showLeftArrow[category] && (
+  <button
+    onClick={() => scrollSlider(category, 'left')}
+    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label={`Scroll ${category} left`}
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+)}
 
-                        {/* Right Arrow */}
-                        <button
-                          onClick={() => scrollSlider(category, 'right')}
-                          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 ${
-                            showRightArrow[category] ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
-                          } group-hover:opacity-100 group-hover:translate-x-0`}
-                        >
-                          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
+{showRightArrow[category] && (
+  <button
+    onClick={() => scrollSlider(category, 'right')}
+    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label={`Scroll ${category} right`}
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+)}
 
                         {/* Games Slider */}
                         <div
-  ref={(el) => {
-    if (el) categoryRefs.current[category] = el;
-  }}
-  className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
-  style={{
-    scrollbarWidth: 'none',         // Firefox
-    msOverflowStyle: 'none',        // IE/Edge
-  }}
->
+                          ref={(el) => {
+                            if (el) categoryRefs.current[category] = el;
+                          }}
+                          className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
+                          style={{
+                            scrollbarWidth: 'none',         // Firefox
+                            msOverflowStyle: 'none',        // IE/Edge
+                          }}
+                        >
                           {categoryGames.map((game: GameInfo, index) => (
                             <div
                               key={game.id}
                               className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
                                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                               }`}
-                              style={{ transitionDelay: `${(categoryIndex * 100) + (index * 50)}ms` }}
+                              style={{ transitionDelay: `${((categoryIndex + 1) * 100) + (index * 50)}ms` }}
                             >
                               <GameCard game={game} />
                             </div>
