@@ -64,43 +64,44 @@ export default function Home() {
     return () => observer.disconnect();
   }, [categories, isSearching]);
 
-const loadData = async () => {
-  try {
-    // Import Firebase functions
-    const { collection, getDocs } = await import('firebase/firestore');
-    
-    // Fetch games from Firebase
-    const gamesSnapshot = await getDocs(collection(db, 'games'));
-    const gamesList: GameInfo[] = [];
-    gamesSnapshot.forEach((doc) => {
-  const data = doc.data();
-  gamesList.push({ 
-    id: data.id,  // Use the id field from the document data
-    name: data.name,
-    categories: data.categories,
-    path: data.path,
-    thumbnail: data.thumbnail
-  } as GameInfo);
-});
-    
-    setGames(gamesList);
-    setTotalGames(gamesList.length);
-    
-    // Fetch categories from Firebase
-    const categoriesSnapshot = await getDocs(collection(db, 'categories'));
-    const categoriesList: string[] = [];
-    categoriesSnapshot.forEach((doc) => {
-      categoriesList.push(doc.data().name); // Assuming category documents have a 'name' field
-    });
-    
-    setCategories(categoriesList);
-    setFilteredGames(gamesList);
-  } catch (error) {
-    console.error('Error loading data:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+  const loadData = async () => {
+    try {
+      // Import Firebase functions
+      const { collection, getDocs } = await import('firebase/firestore');
+      
+      // Fetch games from Firebase
+      const gamesSnapshot = await getDocs(collection(db, 'games'));
+      const gamesList: GameInfo[] = [];
+      gamesSnapshot.forEach((doc) => {
+        const data = doc.data();
+        gamesList.push({ 
+          id: data.id,  // Use the id field from the document data
+          name: data.name,
+          categories: data.categories,
+          path: data.path,
+          thumbnail: data.thumbnail
+        } as GameInfo);
+      });
+      
+      setGames(gamesList);
+      setTotalGames(gamesList.length);
+      
+      // Fetch categories from Firebase
+      const categoriesSnapshot = await getDocs(collection(db, 'categories'));
+      const categoriesList: string[] = [];
+      categoriesSnapshot.forEach((doc) => {
+        categoriesList.push(doc.data().name); // Assuming category documents have a 'name' field
+      });
+      
+      setCategories(categoriesList);
+      setFilteredGames(gamesList);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filterGames = () => {
     if (!searchTerm) {
       setFilteredGames(games);
@@ -131,10 +132,10 @@ const loadData = async () => {
     }));
   };
 
-const getDisplayedGames = (category: string) => {
-  const categoryGames = getGamesByCategory(category);
-  return categoryGames.slice(0, GAMES_PER_CATEGORY);
-};
+  const getDisplayedGames = (category: string) => {
+    const categoryGames = getGamesByCategory(category);
+    return categoryGames.slice(0, GAMES_PER_CATEGORY);
+  };
 
   const handleCategoryClick = (category: string) => {
     if (isSearching) {
@@ -160,42 +161,42 @@ const getDisplayedGames = (category: string) => {
       </div>
 
       <div className="relative flex">
-        {/* Sidebar */}
-        <Sidebar 
-          categories={categories} 
-          onCategoryClick={handleCategoryClick}
-          activeCategoryId={activeCategoryId}
-        />
+        {/* Sidebar - Hidden on mobile (lg breakpoint and up) */}
+        <div className="hidden lg:block">
+          <Sidebar 
+            categories={categories} 
+            onCategoryClick={handleCategoryClick}
+            activeCategoryId={activeCategoryId}
+          />
+        </div>
 
         {/* Main Content */}
-        <div className="flex-1">
-          {/* Hero Section */}
-
-
-          {/* Main Content */}
-{/* Main Content */}
-<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  {/* Image Slider */}
-  <Slider />
-  
-  {/* Search Results or Category View */}
-  {isSearching ? (
+        <div className="flex-1 w-full">
+          {/* Main Content Container */}
+          <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+            {/* Image Slider */}
+            <div className="mb-6 sm:mb-8">
+              <Slider />
+            </div>
+            
+            {/* Search Results or Category View */}
+            {isSearching ? (
               <div className={`transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-1 h-8 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
+                  <div className="flex items-center space-x-3 sm:space-x-4">
+                    <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                         Search Results
                       </h2>
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                         Found {filteredGames.length} games matching "{searchTerm}"
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="group flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md"
+                    className="group flex items-center justify-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md w-full sm:w-auto"
                   >
                     <svg className="w-4 h-4 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -205,7 +206,7 @@ const getDisplayedGames = (category: string) => {
                 </div>
                 
                 {filteredGames.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                     {filteredGames.map((game: GameInfo, index) => (
                       <div
                         key={game.id}
@@ -219,21 +220,21 @@ const getDisplayedGames = (category: string) => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-16">
-                    <div className="w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-16 h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="text-center py-12 sm:py-16 px-4">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                      <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No games found</h3>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">No games found</h3>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 max-w-md mx-auto">
                       We couldn't find any games matching your search. Try different keywords or browse our categories.
                     </p>
                     <button
                       onClick={() => setSearchTerm('')}
-                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                      className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base"
                     >
-                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                       </svg>
                       Browse All Games
@@ -243,7 +244,7 @@ const getDisplayedGames = (category: string) => {
               </div>
             ) : (
               /* Category Sections */
-              <div className="space-y-16">
+              <div className="space-y-12 sm:space-y-16">
                 {categories.map((category, categoryIndex) => {
                   const categoryGames = getGamesByCategory(category);
                   const displayedGames = getDisplayedGames(category);
@@ -256,21 +257,21 @@ const getDisplayedGames = (category: string) => {
                   return (
                     <div 
                       key={category} 
-                      className={`space-y-6 transform transition-all duration-700 ${
+                      className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
                         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                       }`}
                       style={{ transitionDelay: `${categoryIndex * 100}ms` }}
                       id={`category-${categoryId}`}
                     >
                       {/* Category Header */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-1 h-12 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-center space-x-3 sm:space-x-4">
+                          <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full"></div>
                           <div>
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
                               {category}
                             </h2>
-                            <p className="text-gray-600 dark:text-gray-400">
+                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                               {categoryGames.length} game{categoryGames.length !== 1 ? 's' : ''} available
                             </p>
                           </div>
@@ -279,9 +280,9 @@ const getDisplayedGames = (category: string) => {
                         {hasMore && (
                           <button
                             onClick={() => toggleCategoryExpansion(category)}
-                            className="group flex items-center space-x-2 px-6 py-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md"
+                            className="group flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md w-full sm:w-auto"
                           >
-                            <span className="font-medium text-gray-700 dark:text-gray-300">
+                            <span className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300">
                               {isExpanded ? 'Show Less' : 'See All'}
                             </span>
                             <svg 
@@ -299,7 +300,7 @@ const getDisplayedGames = (category: string) => {
                       </div>
 
                       {/* Games Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                         {displayedGames.map((game: GameInfo, index) => (
                           <div
                             key={game.id}
@@ -318,7 +319,7 @@ const getDisplayedGames = (category: string) => {
                         isExpanded ? 'max-h-screen' : 'max-h-0'
                       }`}>
                         {isExpanded && (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pt-6">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 pt-4 sm:pt-6">
                             {categoryGames.slice(GAMES_PER_CATEGORY).map((game: GameInfo, index) => (
                               <div
                                 key={game.id}

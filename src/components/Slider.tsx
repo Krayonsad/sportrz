@@ -64,7 +64,7 @@ const Slider = () => {
             <img
               src={slide.image}
               alt={slide.alt}
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-fill"
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
@@ -118,3 +118,5 @@ const Slider = () => {
 };
 
 export default Slider;
+
+//I have changed this file.
