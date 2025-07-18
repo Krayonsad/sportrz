@@ -235,13 +235,17 @@ useEffect(() => {
       const gamesList: GameInfo[] = [];
       gamesSnapshot.forEach((doc) => {
         const data = doc.data();
-        gamesList.push({ 
-          id: data.id,  // Use the id field from the document data
-          name: data.name,
-          categories: data.categories,
-          path: data.path,
-          thumbnail: data.thumbnail
-        } as GameInfo);
+// Extract numeric ID from game ID (e.g., "arcade1" -> "1")
+const numericId = data.id.match(/(\d+)$/)?.[1];
+const thumbnailPath = numericId ? `/thumbnails/${numericId}.webp` : data.thumbnail;
+
+gamesList.push({ 
+  id: data.id,
+  name: data.name,
+  categories: data.categories,
+  path: data.path,
+  thumbnail: thumbnailPath  // <- Use local path for arcade games
+} as GameInfo);
       });
       
       // Sort games by numeric ID to maintain proper order
