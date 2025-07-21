@@ -9,7 +9,10 @@ import { GameTrackingService } from '@/lib/gameTrackingService';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useGameTimer } from '@/hooks/useGameTimer';
-import { Clock, Crown, Zap, Lock, User } from 'lucide-react';
+import { Clock, Crown, Zap, Lock, User, Edit, Shield } from 'lucide-react';
+import EditGameModal from '@/components/EditGameModal';
+import { useAdmin } from '@/contexts/AdminContext';
+
 
 export default function GamePage() {
   const params = useParams();
@@ -21,16 +24,19 @@ export default function GamePage() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTrialWarning, setShowTrialWarning] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  
+  const [showEditModal, setShowEditModal] = useState(false);
   const { currentUser, loading: authLoading } = useAuth();
   const { isSubscribed, subscriptionPlan } = useSubscription();
+  
+  const { isAdmin, loading: adminLoading } = useAdmin();
+
   const { 
     timeLeft, 
     isTrialExpired, 
     startTimer, 
     pauseTimer, 
     formatTime 
-  } = useGameTimer(gameId, isSubscribed);
+  } = useGameTimer(isSubscribed, isAdmin);
 
   const trackGamePlay = async (gameData: any) => {
   if (!currentUser) return;
@@ -110,11 +116,11 @@ export default function GamePage() {
   }, [game, isSubscribed, currentUser, startTimer]);
 
   // Show warning when 1 minute left
-  useEffect(() => {
-    if (!isSubscribed && timeLeft <= 60 && timeLeft > 0) {
+useEffect(() => {
+    if (!isAdmin && !isSubscribed && timeLeft <= 60 && timeLeft > 0) {
       setShowTrialWarning(true);
     }
-  }, [timeLeft, isSubscribed]);
+  }, [timeLeft, isSubscribed, isAdmin]);
 
   // Handle visibility change to pause/resume timer
   useEffect(() => {
@@ -249,7 +255,7 @@ export default function GamePage() {
   }
 
   // Trial expired overlay
-  if (isTrialExpired && !isSubscribed) {
+  if (isTrialExpired && !isSubscribed && !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="max-w-md w-full mx-4">
@@ -263,7 +269,7 @@ export default function GamePage() {
             </h2>
             
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              You've used your 5-minute trial for <strong>{game.name}</strong>. 
+              You've used your 5-minute trial
               Upgrade to a premium plan to continue playing without limits!
             </p>
             
@@ -291,10 +297,21 @@ export default function GamePage() {
 
 
 
+// Add this function to handle game updates
+const handleGameUpdate = (updatedGame: GameInfo) => {
+    setGame(updatedGame);
+    setShowEditModal(false);
+    
+    // If the ID changed, redirect to the new game page
+    if (updatedGame.id !== gameId) {
+      router.push(`/game/${updatedGame.id}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Trial Warning Banner */}
-      {showTrialWarning && !isSubscribed && (
+      {showTrialWarning && !isSubscribed && !isAdmin &&(
         <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 text-center">
           <div className="flex items-center justify-center space-x-2">
             <Clock className="w-5 h-5" />
@@ -326,10 +343,32 @@ export default function GamePage() {
                 Back to Games
               </Link>
               <div className="text-sm text-gray-500 dark:text-gray-400">|</div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {game.name}
-              </h1>
             </div>
+                          {/* Admin Edit Button */}
+              {isAdmin && game && (
+                <>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">|</div>
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-indigo-700 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 hover:bg-indigo-200 dark:hover:bg-indigo-800/40 rounded-lg transition-colors"
+                  >
+                    <Edit className="w-3.5 h-3.5 mr-1" />
+                    Edit Game
+                  </button>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-4">
+              {/* Admin Badge */}
+              {isAdmin && (
+                <div className="flex items-center space-x-2 bg-purple-100 dark:bg-purple-900/30 px-3 py-1 rounded-lg">
+                  <Shield className="w-4 h-4 text-purple-700 dark:text-purple-400" />
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-400">
+                    Admin
+                  </span>
+                </div>
+              )}
             
             <div className="flex items-center space-x-4">
               {/* User Info */}
@@ -341,7 +380,7 @@ export default function GamePage() {
               </div>
               
               {/* Timer Display */}
-              {!isSubscribed && (
+              {!isSubscribed && !isAdmin &&(
                 <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg">
                   <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-900 dark:text-white">
@@ -349,9 +388,18 @@ export default function GamePage() {
                   </span>
                 </div>
               )}
+                         {/* Admin Access Badge - Show instead of subscription or timer */}
+              {isAdmin && (
+                <div className="flex items-center space-x-2 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 px-3 py-2 rounded-lg">
+                  <Shield className="w-4 h-4 text-green-700 dark:text-green-400" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                    Unlimited Access
+                  </span>
+                </div>
+              )}
               
               {/* Subscription Status */}
-              {isSubscribed && (
+              {isSubscribed && !isAdmin && (
                 <div className="flex items-center space-x-2 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 px-3 py-2 rounded-lg">
                   <Crown className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                   <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
@@ -410,9 +458,24 @@ export default function GamePage() {
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 HTML5 Game - Use mouse and keyboard to play
               </p>
-              
+
+                      {/* Admin Info Box - Show for admins */}
+              {isAdmin && (
+                <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Shield className="w-5 h-5 text-green-700 dark:text-green-400" />
+                    <span className="font-semibold text-green-700 dark:text-green-400">
+                      Admin Access
+                    </span>
+                  </div>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    You have unlimited access to all games as an administrator. No time limits or subscription required.
+                  </p>
+                </div>
+              )}
+
               {/* Trial Info for Non-Subscribers */}
-              {!isSubscribed && (
+              {!isSubscribed &&!isAdmin &&(
                 <div className="mb-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-lg border border-indigo-200 dark:border-indigo-700">
                   <div className="flex items-center space-x-2 mb-2">
                     <Clock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -456,6 +519,16 @@ export default function GamePage() {
             </div>
           </div>
           
+      {/* Edit Game Modal */}
+      {showEditModal && game && (
+        <EditGameModal 
+          game={game} 
+          onClose={() => setShowEditModal(false)} 
+          onSave={handleGameUpdate} 
+        />
+      )}
+    </div>
+
           {/* Game Controls Info */}
           <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Game Controls</h3>
@@ -476,6 +549,6 @@ export default function GamePage() {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 }

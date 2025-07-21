@@ -99,14 +99,14 @@ export default function Navbar() {
   {/* Left Side: Logo + Search */}
 <div className="flex items-center">
   {/* Logo + Title */}
-  <Link href="/" className="flex items-center space-x-2 group">
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl overflow-hidden">
-  <img src="/Logo.png" alt="Sportrz Logo" className="w-full h-full object-contain" />
-</div>
-    <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-      Sportrz
-    </span>
-  </Link>
+<Link href="/" className="flex items-center space-x-2 group">
+  <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl overflow-hidden">
+    <img src="/Logo.png" alt="Sportrz Logo" className="w-full h-full object-contain" />
+  </div>
+        <span className="text-xl font-bold text-[#FD3207]" style={{ fontFamily: "var(--font-vezla)" }}>
+  SPORTRZ
+</span>
+</Link>
 
   {/* 👇 Push search bar farther right */}
   <div className="hidden md:block relative ml-28"> {/* change ml-16 to ml-20 or more if needed */}

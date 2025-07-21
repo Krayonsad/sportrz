@@ -1,3 +1,4 @@
+// src/hooks/useGameTimer.ts
 import { useState, useEffect, useCallback } from 'react';
 
 const TRIAL_DURATION = 1 * 60; // 5 minutes in seconds
@@ -13,112 +14,112 @@ interface GameTimerState {
   formatTime: (seconds: number) => string;
 }
 
-export function useGameTimer(gameId: string, isSubscribed: boolean): GameTimerState {
+const GLOBAL_TIMER_KEY = 'sportrz_global_trial_timer';
+
+export function useGameTimer(isSubscribed: boolean, isAdmin: boolean = false): GameTimerState {
+  // If user is admin, they're treated as having unlimited time
+  const effectivelySubscribed = isSubscribed || isAdmin;
+  
   const [timeLeft, setTimeLeft] = useState(TRIAL_DURATION);
   const [isActive, setIsActive] = useState(false);
   const [totalTimeUsed, setTotalTimeUsed] = useState(0);
   const [isTrialExpired, setIsTrialExpired] = useState(false);
 
-  // Load saved timer state
+  // Load saved timer state - global now, no gameId
   useEffect(() => {
-    if (isSubscribed) {
-      // If user is subscribed, don't apply timer restrictions
+    // Admin bypass: If admin, always set trial as not expired
+    if (effectivelySubscribed) {
       setIsTrialExpired(false);
       return;
     }
 
-    const savedData = localStorage.getItem(`${STORAGE_KEY}_${gameId}`);
+    const savedData = localStorage.getItem(GLOBAL_TIMER_KEY);
     if (savedData) {
       try {
         const { timeUsed, lastPlayed, checksum } = JSON.parse(savedData);
-        
-        // Verify checksum to prevent tampering
-        const expectedChecksum = btoa(timeUsed.toString() + gameId + 'sportrz_security');
+
+        const expectedChecksum = btoa(timeUsed.toString() + 'sportrz_security');
         if (checksum !== expectedChecksum) {
-          // Data might be tampered, reset
-          localStorage.removeItem(`${STORAGE_KEY}_${gameId}`);
-          setTimeLeft(TRIAL_DURATION);
-          setTotalTimeUsed(0);
-          setIsTrialExpired(false);
+          localStorage.removeItem(GLOBAL_TIMER_KEY);
+          resetTimerState();
           return;
         }
-        
+
         const now = Date.now();
         const timeSinceLastPlayed = now - lastPlayed;
-        
-        // If more than 24 hours have passed, reset the timer
+
         if (timeSinceLastPlayed > 24 * 60 * 60 * 1000) {
-          setTimeLeft(TRIAL_DURATION);
-          setTotalTimeUsed(0);
-          setIsTrialExpired(false);
-          localStorage.removeItem(`${STORAGE_KEY}_${gameId}`);
+          localStorage.removeItem(GLOBAL_TIMER_KEY);
+          resetTimerState();
         } else {
           const remainingTime = Math.max(0, TRIAL_DURATION - timeUsed);
           setTimeLeft(remainingTime);
           setTotalTimeUsed(timeUsed);
           setIsTrialExpired(remainingTime <= 0);
         }
-      } catch (error) {
-        console.error('Error loading timer data:', error);
-        // Reset on error
-        setTimeLeft(TRIAL_DURATION);
-        setTotalTimeUsed(0);
-        setIsTrialExpired(false);
+      } catch (e) {
+        console.error('Error loading timer data:', e);
+        resetTimerState();
       }
+    } else {
+      resetTimerState();
     }
-  }, [gameId, isSubscribed]);
+  }, [effectivelySubscribed]);
 
-  // Timer countdown effect
+  // Countdown timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
-    if (isActive && timeLeft > 0 && !isSubscribed) {
+    // Admin bypass: Don't start countdown if admin
+    if (isActive && timeLeft > 0 && !effectivelySubscribed) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => {
           const newTime = prevTime - 1;
           const newTotalUsed = TRIAL_DURATION - newTime;
-          
-          // Save to localStorage with anti-tampering measures
+
           const saveData = {
             timeUsed: newTotalUsed,
             lastPlayed: Date.now(),
-            checksum: btoa(newTotalUsed.toString() + gameId + 'sportrz_security')
+            checksum: btoa(newTotalUsed.toString() + 'sportrz_security'),
           };
-          
-          localStorage.setItem(`${STORAGE_KEY}_${gameId}`, JSON.stringify(saveData));
-          
+
+          localStorage.setItem(GLOBAL_TIMER_KEY, JSON.stringify(saveData));
+
           if (newTime <= 0) {
             setIsTrialExpired(true);
             setIsActive(false);
           }
-          
+
           return newTime;
         });
       }, 1000);
     }
-
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, timeLeft, gameId, isSubscribed]);
+  }, [isActive, timeLeft, effectivelySubscribed]);
+
+  const resetTimerState = () => {
+    setTimeLeft(TRIAL_DURATION);
+    setTotalTimeUsed(0);
+    setIsTrialExpired(false);
+    setIsActive(false);
+  };
 
   const startTimer = useCallback(() => {
-    if (!isSubscribed && !isTrialExpired) {
+    // Admin bypass: Don't start timer for admins
+    if (!effectivelySubscribed && !isTrialExpired) {
       setIsActive(true);
     }
-  }, [isSubscribed, isTrialExpired]);
+  }, [effectivelySubscribed, isTrialExpired]);
 
   const pauseTimer = useCallback(() => {
     setIsActive(false);
   }, []);
 
   const resetTimer = useCallback(() => {
-    setIsActive(false);
-    setTimeLeft(TRIAL_DURATION);
-    setTotalTimeUsed(0);
-    setIsTrialExpired(false);
-    localStorage.removeItem(`${STORAGE_KEY}_${gameId}`);
-  }, [gameId]);
+    resetTimerState();
+    localStorage.removeItem(GLOBAL_TIMER_KEY);
+  }, []);
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -126,13 +127,26 @@ export function useGameTimer(gameId: string, isSubscribed: boolean): GameTimerSt
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   }, []);
 
+  // Admin bypass: If admin, always return max time and not expired
+  if (isAdmin) {
+    return {
+      timeLeft: TRIAL_DURATION,
+      totalTimeUsed: 0,
+      isTrialExpired: false,
+      startTimer,
+      pauseTimer,
+      resetTimer,
+      formatTime,
+    };
+  }
+
   return {
     timeLeft,
-    isTrialExpired,
     totalTimeUsed,
+    isTrialExpired,
     startTimer,
     pauseTimer,
     resetTimer,
-    formatTime
+    formatTime,
   };
 }

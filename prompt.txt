@@ -1,3 +1,255 @@
+This is the directory structure of the src folder:
+Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    16:08                app
+d----          21-07-2025    16:19                components
+d----          18-07-2025    21:58                contexts
+d----          18-07-2025    21:58                hooks
+d----          18-07-2025    21:58                lib
+d----          18-07-2025    21:58                types
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          18-07-2025    21:58                about
+d----          18-07-2025    21:58                admin
+d----          18-07-2025    21:58                api
+d----          18-07-2025    21:58                cancellation
+d----          21-07-2025    16:08                category
+d----          18-07-2025    21:58                contact
+d----          18-07-2025    21:58                disclaimer
+d----          18-07-2025    21:58                feedback
+d----          18-07-2025    21:58                game
+d----          18-07-2025    21:58                help
+d----          18-07-2025    21:58                login
+d----          18-07-2025    21:58                plans
+d----          18-07-2025    21:58                privacy
+d----          18-07-2025    21:58                profile
+d----          18-07-2025    21:58                refund
+d----          18-07-2025    21:58                signup
+d----          18-07-2025    21:58                terms
+d----          18-07-2025    21:58                verify-email
+-a---          18-07-2025    21:08          96074 favicon.ico
+-a---          12-07-2025    11:53           9511 globals.css
+-a---          17-07-2025    01:07           1933 layout.tsx
+-a---          10-07-2025    14:23           2747 page.module.css
+-a---          21-07-2025    16:34          25968 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\about
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:01          11443 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\admin
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:04           5106 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\api
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          18-07-2025    21:58                create-order
+d----          18-07-2025    21:58                feedback
+d----          18-07-2025    21:58                games
+d----          18-07-2025    21:58                verify-payment
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\api\create-order
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    22:31           2489 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\api\feedback
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    17:07           1995 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\api\games
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:35            560 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\api\verify-payment
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    02:18           3762 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\cancellation
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:59          10039 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\category
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    16:08                [slug]
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\category\[slug]
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    16:20           7725 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\contact
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:47          10153 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\disclaimer
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:59          11248 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\feedback
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    17:01            124 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\game
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          18-07-2025    21:58                [id]
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\game\[id]
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    02:41          21204 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\help
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          11-07-2025    09:48          13495 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\login
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    21:35          17037 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\plans
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    22:27          16515 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\privacy
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:54          15855 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\profile
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    02:44          14486 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\refund
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:54           8488 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\signup
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          16-07-2025    20:54          13570 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\terms
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          11-07-2025    09:28           8265 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\app\verify-email
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          16-07-2025    20:55           6042 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\components
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    16:19           1243 CategorySidebar.tsx
+-a---          12-07-2025    16:47          13232 ContactMessages.tsx
+-a---          12-07-2025    17:14          13860 FeedbackPage.tsx
+-a---          18-07-2025    21:43          10396 Footer.tsx
+-a---          21-07-2025    16:25           3319 GameCard.tsx
+-a---          14-07-2025    16:30            629 LoadingSpinner.tsx
+-a---          18-07-2025    21:42          17040 Navbar.tsx
+-a---          17-07-2025    01:01           7002 NotificationDropdown.tsx
+-a---          17-07-2025    00:24           8183 RecentlyPlayedGames.tsx
+-a---          11-07-2025    08:56           2757 SearchBar.tsx
+-a---          21-07-2025    16:18           7319 Sidebar.tsx
+-a---          18-07-2025    21:06           4693 Slider.tsx
+-a---          18-07-2025    01:41           6432 SubscriptionGuard.tsx
+-a---          17-07-2025    02:35           1041 SubscriptionStatus.tsx
+-a---          11-07-2025    08:46           1275 ThemeToggle.tsx
+-a---          11-07-2025    21:36           2939 Toast.tsx
+-a---          11-07-2025    21:25            658 ToastContainer.tsx
+-a---          21-07-2025    14:56           3087 TopGameCard.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\contexts
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    12:23           1755 AdminContext.tsx
+-a---          17-07-2025    21:33           5346 AuthContext.tsx
+-a---          12-07-2025    17:07           1857 FeedbackContext.tsx
+-a---          17-07-2025    01:01           5528 NotificationContext.tsx
+-a---          12-07-2025    10:24           1111 SearchContext.tsx
+-a---          17-07-2025    02:31           5974 SubscriptionContext.tsx
+-a---          11-07-2025    08:57           1511 ThemeContext.tsx
+-a---          11-07-2025    21:25           1648 ToastContext.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\hooks
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    13:37           4321 useGameTimer.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\lib
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:47           7080 contactService.ts
+-a---          12-07-2025    17:05           3069 feedbackService.ts
+-a---          18-07-2025    01:42            995 firebase.ts
+-a---          12-07-2025    17:15           9597 firebaseService.ts
+-a---          18-07-2025    00:34           1910 gameConfig.ts
+-a---          17-07-2025    00:23           3704 gameTrackingService.ts
+-a---          17-07-2025    00:58           4982 notificationService.ts
+-a---          17-07-2025    22:27           2611 razorpay.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 33\src\types
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:46            523 contact.ts
+-a---          18-07-2025    00:35            284 game.ts
+-a---          17-07-2025    00:55            709 notification.ts
+-a---          17-07-2025    01:04            561 user.ts
+
+This is my page.tsx:
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -347,32 +599,6 @@ const scrollSlider = (category: string, direction: 'left' | 'right') => {
     );
   }
 
-  // Add this function to your component to calculate card widths
-const getCardWidths = () => {
-  // Define breakpoints and card counts
-  const breakpoints = {
-    xs: { width: 640, cards: 2 },  // < 640px (mobile)
-    sm: { width: 768, cards: 3 },  // 640px-768px
-    md: { width: 1024, cards: 4 }, // 768px-1024px
-    lg: { width: 1280, cards: 5 }, // 1024px-1280px
-    xl: { width: 1536, cards: 6 }  // > 1280px
-  };
-  
-  // For top games (larger cards)
-  const topGameBreakpoints = {
-    xs: { width: 640, cards: 1 },
-    sm: { width: 768, cards: 2 },
-    md: { width: 1024, cards: 2 },
-    lg: { width: 1280, cards: 3 },
-    xl: { width: 1536, cards: 3 }
-  };
-  
-  return {
-    regular: breakpoints,
-    topGames: topGameBreakpoints
-  };
-};
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
       {/* Animated background elements */}
@@ -521,27 +747,26 @@ const getCardWidths = () => {
 )}
 
       {/* Top Games Slider - Using the new TopGameCard component */}
-{/* Top Games Slider */}
-<div
-  ref={topGamesRef}
-  className="flex space-x-4 sm:space-x-6 overflow-x-auto scroll-smooth scrollbar-hide pb-6"
-  style={{
-    scrollbarWidth: 'none',
-    msOverflowStyle: 'none',
-  }}
->
-  {topGames.map((game: GameInfo, index) => (
-    <div
-      key={game.id}
-      className={`flex-shrink-0 w-[calc(33.333%-16px)] sm:w-[calc(33.333%-24px)] md:w-[calc(33.333%-24px)] lg:w-[calc(33.333%-24px)] transform transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}
-      style={{ transitionDelay: `${index * 50}ms` }}
-    >
-      <TopGameCard game={game} index={index} />
-    </div>
-  ))}
-</div>
+      <div
+        ref={topGamesRef}
+        className="flex space-x-4 sm:space-x-6 overflow-x-auto scroll-smooth scrollbar-hide pb-6"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
+        {topGames.map((game: GameInfo, index) => (
+          <div
+            key={game.id}
+            className={`flex-shrink-0 w-64 sm:w-72 md:w-80 lg:w-96 transform transition-all duration-500 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+            style={{ transitionDelay: `${index * 50}ms` }}
+          >
+            <TopGameCard game={game} index={index} />
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 )}
@@ -574,57 +799,56 @@ const getCardWidths = () => {
                         </div>
                       </div>
 
+                      {/* Games Slider Container */}
+                      <div className="relative group">
+{showLeftArrow[category] && (
+  <button
+    onClick={() => scrollSlider(category, 'left')}
+    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label={`Scroll ${category} left`}
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+)}
 
-{/* Games Slider Container */}
-<div className="relative group">
-  {showLeftArrow[category] && (
-    <button
-      onClick={() => scrollSlider(category, 'left')}
-      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
-      aria-label={`Scroll ${category} left`}
-    >
-      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
-  )}
+{showRightArrow[category] && (
+  <button
+    onClick={() => scrollSlider(category, 'right')}
+    className="absolute right-12 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+    aria-label={`Scroll ${category} right`}
+  >
+    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+)}
 
-  {showRightArrow[category] && (
-    <button
-      onClick={() => scrollSlider(category, 'right')}
-      className="absolute right-12 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
-      aria-label={`Scroll ${category} right`}
-    >
-      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-      </svg>
-    </button>
-  )}
-
-{/* Games Slider */}
-<div
-  ref={(el) => {
-    if (el) categoryRefs.current[category] = el;
-  }}
-  className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
-  style={{
-    scrollbarWidth: 'none',
-    msOverflowStyle: 'none',
-  }}
->
-  {categoryGames.map((game: GameInfo, index) => (
-    <div
-      key={game.id}
-      className={`flex-shrink-0 transform transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      } w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(25%-12px)] lg:w-[calc(20%-12px)] xl:w-[calc(16.666%-16px)]`}
-      style={{ transitionDelay: `${((categoryIndex + 1) * 100) + (index * 50)}ms` }}
-    >
-      <GameCard game={game} />
-    </div>
-  ))}
-</div>
-</div>
+                        {/* Games Slider */}
+                        <div
+                          ref={(el) => {
+                            if (el) categoryRefs.current[category] = el;
+                          }}
+                          className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
+                          style={{
+                            scrollbarWidth: 'none',         // Firefox
+                            msOverflowStyle: 'none',        // IE/Edge
+                          }}
+                        >
+                          {categoryGames.map((game: GameInfo, index) => (
+                            <div
+                              key={game.id}
+                              className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
+                                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                              }`}
+                              style={{ transitionDelay: `${((categoryIndex + 1) * 100) + (index * 50)}ms` }}
+                            >
+                              <GameCard game={game} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
@@ -638,3 +862,5 @@ const getCardWidths = () => {
 }
 
 //.
+
+Right now, it shows 5 games, for each category on my screen. But the 6th game card is half cut. That does not look nice. Fix it.

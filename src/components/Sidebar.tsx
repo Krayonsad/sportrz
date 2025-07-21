@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   categories: string[];
@@ -10,6 +11,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ categories, onCategoryClick, activeCategoryId }: SidebarProps) {
+  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -20,14 +22,13 @@ export default function Sidebar({ categories, onCategoryClick, activeCategoryId 
     'Arcade': '🕹️',
     'Casual': '🎮',
     'Strategy': '🧠',
-    'Defense': '🛡️',
+    'Defence': '🪖',
     'Racing': '🏎️',
     'Sports': '⚽',
     'Puzzle': '🧩',
     'Shooter': '🎯',
     'Horror': '👻',
     'Board & Card': '🎲',
-    'Educational': '📚',
     'Platformer': '🏃',
     'Simulation': '🏗️',
     'Physics': '⚛️',
@@ -41,19 +42,11 @@ export default function Sidebar({ categories, onCategoryClick, activeCategoryId 
     onCategoryClick(category);
     setIsMobileOpen(false);
     
-    // Smooth scroll to category section
-    const categoryId = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const element = document.getElementById(`category-${categoryId}`);
-    if (element) {
-      const navbarHeight = 64; // Navbar height
-      const offset = navbarHeight + 20; // Extra spacing
-      const elementPosition = element.offsetTop - offset;
-      
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-    }
+    // Convert category name to URL slug
+    const slug = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    
+    // Navigate to category page
+    router.push(`/category/${slug}`);
   };
 
   const toggleCollapse = () => {
@@ -99,7 +92,7 @@ export default function Sidebar({ categories, onCategoryClick, activeCategoryId 
       <aside
         id="sidebar"
         className={`
-          sticky top-16 left-0 z-30 h-[calc(100vh-4rem)] 
+          sticky top-16 left-0 z-25 h-[calc(100vh-4rem)]
           bg-white dark:bg-gray-800 
           border-r border-gray-200 dark:border-gray-700 
           shadow-lg transition-all duration-300 ease-in-out
@@ -107,6 +100,31 @@ export default function Sidebar({ categories, onCategoryClick, activeCategoryId 
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
+
+{/* Home Link */}
+<ul className="space-y-1 px-2 mb-2">
+  <li>
+    <button
+      onClick={() => router.push('/')}
+      className={`
+        w-full flex items-center px-3 py-2 rounded-lg transition-colors text-left
+        hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300
+        ${isCollapsed ? 'justify-center' : 'justify-start'}
+      `}
+      title={isCollapsed ? 'Home' : undefined}
+    >
+      <span className="text-xl flex-shrink-0">
+        🏠
+      </span>
+      {!isCollapsed && (
+        <span className="ml-3 text-sm font-medium truncate">
+          Home
+        </span>
+      )}
+    </button>
+  </li>
+</ul>
+<div className="border-t border-gray-200 dark:border-gray-700 mb-2"></div>
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">

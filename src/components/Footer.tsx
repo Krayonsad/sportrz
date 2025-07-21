@@ -149,8 +149,6 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
               <p>&copy; 2025 Sportrz. All rights reserved.</p>
-              <span className="hidden md:inline">•</span>
-              <p className="hidden md:inline">Built with Next.js and Tailwind CSS</p>
             </div>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">

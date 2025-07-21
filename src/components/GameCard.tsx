@@ -37,6 +37,10 @@ export default function GameCard({ game }: GameCardProps) {
     if (game.id === 'arcade4') return '/thumbnails/4.jpg';
     if (game.id === 'arcade5') return '/thumbnails/5.jpg';
     if (game.id === 'arcade10') return '/thumbnails/10.jpg';
+    if (game.id === 'platformer1') return '/thumbnails/1.jpg';
+    if (game.id === 'shooter20') return '/thumbnails/2.jpg';
+    if (game.id === 'simulation10') return '/thumbnails/3.jpg';
+  if (game.id === 'casual13') return '/thumbnails/6.jpg';
     
     // For all other games, use the Firebase thumbnail
     return game.thumbnail;
@@ -54,13 +58,13 @@ export default function GameCard({ game }: GameCardProps) {
         className={`bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-300 ${
           isHovered ? 'shadow-xl border-indigo-300 dark:border-indigo-600 scale-105 -translate-y-1' : ''
         }`}
-        style={{ aspectRatio: '16/9' }} // Consistent aspect ratio
+        style={{ aspectRatio: '16/12' }} // Adjusted aspect ratio to make it taller but still horizontal
       >
         {/* Game Thumbnail Only */}
         <div className="w-full h-full relative overflow-hidden">
           <img 
             src={imageError ? fallbackImage : getThumbnail()} 
-            alt="Game thumbnail"
+            alt={game.name}
             className={`w-full h-full object-cover transition-transform duration-500 ${
               isHovered ? 'scale-110' : 'scale-100'
             }`}

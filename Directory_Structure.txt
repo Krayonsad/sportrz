@@ -1,0 +1,249 @@
+Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    22:11                app
+d----          21-07-2025    22:11                components
+d----          21-07-2025    22:11                contexts
+d----          21-07-2025    22:11                hooks
+d----          21-07-2025    22:11                lib
+d----          21-07-2025    22:11                types
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    22:11                about
+d----          21-07-2025    22:11                admin
+d----          21-07-2025    22:11                api
+d----          21-07-2025    22:11                cancellation
+d----          21-07-2025    22:11                category
+d----          21-07-2025    22:11                contact
+d----          21-07-2025    22:11                disclaimer
+d----          21-07-2025    22:11                feedback
+d----          21-07-2025    22:11                game
+d----          21-07-2025    22:11                help
+d----          21-07-2025    22:11                login
+d----          21-07-2025    22:11                plans
+d----          21-07-2025    22:11                privacy
+d----          21-07-2025    22:11                profile
+d----          21-07-2025    22:11                refund
+d----          21-07-2025    22:11                signup
+d----          21-07-2025    22:11                terms
+d----          21-07-2025    22:11                verify-email
+-a---          18-07-2025    21:08          96074 favicon.ico
+-a---          12-07-2025    11:53           9511 globals.css
+-a---          21-07-2025    18:28           2175 layout.tsx
+-a---          10-07-2025    14:23           2747 page.module.css
+-a---          21-07-2025    20:18          25851 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\about
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:01          11443 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\admin
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:04           5106 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\api
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    22:11                create-order
+d----          21-07-2025    22:11                feedback
+d----          21-07-2025    22:11                games
+d----          21-07-2025    22:11                verify-payment
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\api\create-order
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    22:31           2489 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\api\feedback
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    17:07           1995 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\api\games
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          18-07-2025    00:35            560 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\api\verify-payment
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    02:18           3762 route.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\cancellation
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:59          10039 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\category
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    22:11                [slug]
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\category\[slug]
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    16:20           7725 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\contact
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:47          10153 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\disclaimer
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:59          11248 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\feedback
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    17:01            124 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\game
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----          21-07-2025    22:11                [id]
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\game\[id]
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    21:57          24616 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\help
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          11-07-2025    09:48          13495 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\login
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    21:35          17037 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\plans
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    22:27          16515 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\privacy
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:54          15855 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\profile
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    02:44          14486 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\refund
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          17-07-2025    23:54           8488 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\signup
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          16-07-2025    20:54          13570 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\terms
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          11-07-2025    09:28           8265 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\app\verify-email
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          16-07-2025    20:55           6042 page.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\components
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    16:19           1243 CategorySidebar.tsx
+-a---          12-07-2025    16:47          13232 ContactMessages.tsx
+-a---          21-07-2025    21:43          11184 EditGameModal.tsx
+-a---          12-07-2025    17:14          13860 FeedbackPage.tsx
+-a---          21-07-2025    16:48          10248 Footer.tsx
+-a---          21-07-2025    18:11           3569 GameCard.tsx
+-a---          14-07-2025    16:30            629 LoadingSpinner.tsx
+-a---          21-07-2025    18:32          17016 Navbar.tsx
+-a---          17-07-2025    01:01           7002 NotificationDropdown.tsx
+-a---          17-07-2025    00:24           8183 RecentlyPlayedGames.tsx
+-a---          11-07-2025    08:56           2757 SearchBar.tsx
+-a---          21-07-2025    17:34           7287 Sidebar.tsx
+-a---          21-07-2025    20:25           4895 Slider.tsx
+-a---          18-07-2025    01:41           6432 SubscriptionGuard.tsx
+-a---          17-07-2025    02:35           1041 SubscriptionStatus.tsx
+-a---          11-07-2025    08:46           1275 ThemeToggle.tsx
+-a---          11-07-2025    21:36           2939 Toast.tsx
+-a---          11-07-2025    21:25            658 ToastContainer.tsx
+-a---          21-07-2025    14:56           3087 TopGameCard.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\contexts
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    12:23           1755 AdminContext.tsx
+-a---          17-07-2025    21:33           5346 AuthContext.tsx
+-a---          12-07-2025    17:07           1857 FeedbackContext.tsx
+-a---          17-07-2025    01:01           5528 NotificationContext.tsx
+-a---          12-07-2025    10:24           1111 SearchContext.tsx
+-a---          17-07-2025    02:31           5974 SubscriptionContext.tsx
+-a---          11-07-2025    08:57           1511 ThemeContext.tsx
+-a---          11-07-2025    21:25           1648 ToastContext.tsx
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\hooks
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          21-07-2025    21:51           4471 useGameTimer.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\lib
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:47           7080 contactService.ts
+-a---          12-07-2025    17:05           3069 feedbackService.ts
+-a---          18-07-2025    01:42            995 firebase.ts
+-a---          12-07-2025    17:15           9597 firebaseService.ts
+-a---          17-07-2025    00:23           3704 gameTrackingService.ts
+-a---          17-07-2025    00:58           4982 notificationService.ts
+-a---          17-07-2025    22:27           2611 razorpay.ts
+
+    Directory: C:\Users\Lovish\Lovish\Coding\WebDev\Projects\Sportrz\Version 34\src\types
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12-07-2025    16:46            523 contact.ts
+-a---          18-07-2025    00:35            284 game.ts
+-a---          17-07-2025    00:55            709 notification.ts
+-a---          17-07-2025    01:04            561 user.ts

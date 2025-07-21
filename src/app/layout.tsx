@@ -11,8 +11,16 @@ import Footer from '@/components/Footer';
 import { SearchProvider } from '@/contexts/SearchContext';
 import { SubscriptionProvider } from '@/contexts/SubscriptionContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
+import localFont from 'next/font/local';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Load Vezla font locally
+const vezla = localFont({
+  src: '../../public/fonts/Vezla.ttf', // Path to your TTF file
+  variable: '--font-vezla',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Sportrz - Play Amazing HTML5 Games',
@@ -25,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${vezla.variable}`}>
       <body className={inter.className}>
         <ThemeProvider>
           <ToastProvider>
