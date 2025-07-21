@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 interface GameCardProps {
   game: GameInfo;
@@ -13,6 +14,8 @@ export default function GameCard({ game }: GameCardProps) {
   const { currentUser } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
+  const [imageError, setImageError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleGameClick = (e: React.MouseEvent) => {
     // If user is not logged in, prevent navigation and show toast
@@ -25,45 +28,54 @@ export default function GameCard({ game }: GameCardProps) {
     // If user is logged in, allow normal navigation (Link will handle it)
   };
 
-  return (
-    <Link href={`/game/${game.id}`} onClick={handleGameClick}>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 group transform hover:scale-105 hover:-translate-y-1">
-        {/* Game Preview/Thumbnail - Made shorter for more length than height */}
-{/* Game Preview/Thumbnail - Made shorter for more length than height */}
-<div className="h-32 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 flex items-center justify-center group-hover:from-indigo-200 group-hover:to-purple-200 dark:group-hover:from-indigo-800 dark:group-hover:to-purple-800 transition-all duration-300 relative overflow-hidden">
-  <img 
-    src={game.thumbnail} 
-    alt={game.name}
-    className="w-full h-full object-cover"
-  />
+  // Fallback image if the thumbnail fails to load
+  const fallbackImage = '/placeholder-game.webp'; // Create this in your public folder
   
-  {/* Play overlay */}
-  <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+  // Get the thumbnail based on game ID
+  const getThumbnail = () => {
+    // Check if it's one of the special games
+    if (game.id === 'arcade4') return '/thumbnails/4.jpg';
+    if (game.id === 'arcade5') return '/thumbnails/5.jpg';
+    if (game.id === 'arcade10') return '/thumbnails/10.jpg';
+    
+    // For all other games, use the Firebase thumbnail
+    return game.thumbnail;
+  };
 
-  </div>
-</div>
-        
-        {/* Game Info */}
-        <div className="p-4">
-          <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
-              {game.name}
-            </h3>
-            <div className="flex-shrink-0 ml-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
-                #{game.id}
-              </span>
-            </div>
-          </div>
-         
-          <div className="flex items-center justify-between">
-           
-            <div className="flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="text-sm font-medium">
-                {currentUser ? 'Play' : 'Login to Play'}
-              </span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  return (
+    <Link 
+      href={`/game/${game.id}`} 
+      onClick={handleGameClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="block"
+    >
+      <div 
+        className={`bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 transition-all duration-300 ${
+          isHovered ? 'shadow-xl border-indigo-300 dark:border-indigo-600 scale-105 -translate-y-1' : ''
+        }`}
+        style={{ aspectRatio: '16/9' }} // Consistent aspect ratio
+      >
+        {/* Game Thumbnail Only */}
+        <div className="w-full h-full relative overflow-hidden">
+          <img 
+            src={imageError ? fallbackImage : getThumbnail()} 
+            alt="Game thumbnail"
+            className={`w-full h-full object-cover transition-transform duration-500 ${
+              isHovered ? 'scale-110' : 'scale-100'
+            }`}
+            onError={() => setImageError(true)}
+          />
+          
+          {/* Play overlay - appears only on the hovered card */}
+          <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-center justify-center ${
+            isHovered ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <div className={`bg-white/30 backdrop-blur-sm p-2 rounded-full transition-transform duration-300 ${
+              isHovered ? 'scale-100' : 'scale-0'
+            }`}>
+              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
               </svg>
             </div>
           </div>

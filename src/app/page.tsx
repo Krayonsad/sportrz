@@ -9,6 +9,7 @@ import { GameInfo } from '@/types/game';
 import { useSearch } from '@/contexts/SearchContext';
 import { db } from '@/lib/firebase';
 import Slider from '@/components/Slider';
+import TopGameCard from '@/components/TopGameCard';
 
 export default function Home() {
   const { searchTerm, setSearchTerm, setTotalGames, setFilteredCount } = useSearch();
@@ -212,18 +213,15 @@ useEffect(() => {
   };
 
   // Function to determine top games (you can customize this logic)
-  const getTopGames = (allGames: GameInfo[]): GameInfo[] => {
-    // Option 1: First 10 games
-    // return allGames.slice(0, 10);
-    
-    // Option 2: Games with specific IDs (customize as needed)
-    const topGameIds = ['arcade1', 'arcade5', 'arcade10', 'arcade4'];
-    return allGames.filter(game => topGameIds.includes(game.id));
-    
-    // Option 3: Random selection
-    // const shuffled = [...allGames].sort(() => 0.5 - Math.random());
-    // return shuffled.slice(0, 10);
-  };
+// Function to determine top games
+const getTopGames = (allGames: GameInfo[]): GameInfo[] => {
+  // Option 1: First 6-8 games with better thumbnails
+  // return allGames.slice(0, 6);
+  
+  // Option 2: Specific featured games (uncomment if you prefer this approach)
+  const topGameIds = ['arcade1', 'arcade5', 'arcade10', 'arcade4', 'arcade7'];
+  return allGames.filter(game => topGameIds.includes(game.id));
+};
 
   const loadData = async () => {
     try {
@@ -232,21 +230,20 @@ useEffect(() => {
       
       // Fetch games from Firebase
       const gamesSnapshot = await getDocs(collection(db, 'games'));
-      const gamesList: GameInfo[] = [];
-      gamesSnapshot.forEach((doc) => {
-        const data = doc.data();
-// Extract numeric ID from game ID (e.g., "arcade1" -> "1")
-const numericId = data.id.match(/(\d+)$/)?.[1];
-const thumbnailPath = numericId ? `/thumbnails/${numericId}.webp` : data.thumbnail;
-
-gamesList.push({ 
-  id: data.id,
-  name: data.name,
-  categories: data.categories,
-  path: data.path,
-  thumbnail: thumbnailPath  // <- Use local path for arcade games
-} as GameInfo);
-      });
+// Replace this part in the loadData function
+const gamesList: GameInfo[] = [];
+gamesSnapshot.forEach((doc) => {
+  const data = doc.data();
+  
+  // Use the thumbnail URL from Firebase directly
+  gamesList.push({ 
+    id: data.id,
+    name: data.name,
+    categories: data.categories,
+    path: data.path,
+    thumbnail: data.thumbnail // Use the URL from Firebase
+  } as GameInfo);
+});
       
       // Sort games by numeric ID to maintain proper order
       gamesList.sort((a, b) => {
@@ -444,83 +441,83 @@ const scrollSlider = (category: string, direction: 'left' | 'right') => {
             ) : (
               /* Category Sections */
               <div className="space-y-8 sm:space-y-12">
-                {/* Top Games Section */}
-                {topGames.length > 0 && (
-                  <div 
-                    className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
-                      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                    }`}
-                    style={{ transitionDelay: '0ms' }}
-                    id="category-top-games"
-                  >
-                    {/* Top Games Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 sm:space-x-4">
-                        <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
-                        <div>
-                          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-                            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            Top Games
-                          </h2>
-                          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                            Our most popular games
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Top Games Slider Container */}
-                    <div className="relative group">
-{showLeftArrow['top-games'] && (
-  <button
-    onClick={() => scrollSlider('top-games', 'left')}
-    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
-    aria-label="Scroll left"
+{/* Top Games Section */}
+{topGames.length > 0 && (
+  <div 
+    className={`space-y-4 sm:space-y-6 transform transition-all duration-700 ${
+      isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+    }`}
+    style={{ transitionDelay: '0ms' }}
+    id="category-top-games"
   >
-    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
-)}
+    {/* Top Games Header */}
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="w-1 h-8 sm:h-10 lg:h-12 bg-gradient-to-b from-yellow-500 to-orange-500 rounded-full"></div>
+        <div>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Featured Games
+          </h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            Our most popular and trending games
+          </p>
+        </div>
+      </div>
+    </div>
 
-{showRightArrow['top-games'] && (
-  <button
-    onClick={() => scrollSlider('top-games', 'right')}
-    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
-    aria-label="Scroll right"
-  >
-    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-    </svg>
-  </button>
-)}
+    {/* Top Games Slider Container */}
+    <div className="relative group">
+      {showLeftArrow['top-games'] && (
+        <button
+          onClick={() => scrollSlider('top-games', 'left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+          aria-label="Scroll left"
+        >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
 
-                      {/* Top Games Slider */}
-                      <div
-                        ref={topGamesRef}
-                        className="flex space-x-3 sm:space-x-4 overflow-x-auto scroll-smooth scrollbar-hide pb-4"
-                        style={{
-                          scrollbarWidth: 'none',         // Firefox
-                          msOverflowStyle: 'none',        // IE/Edge
-                        }}
-                      >
-                        {topGames.map((game: GameInfo, index) => (
-                          <div
-                            key={game.id}
-                            className={`flex-shrink-0 w-36 sm:w-40 md:w-44 lg:w-48 transform transition-all duration-500 ${
-                              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-                            }`}
-                            style={{ transitionDelay: `${index * 50}ms` }}
-                          >
-                            <GameCard game={game} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
+      {showRightArrow['top-games'] && (
+        <button
+          onClick={() => scrollSlider('top-games', 'right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-xl transform hover:scale-105 opacity-0 group-hover:opacity-100 translate-x-0"
+          aria-label="Scroll right"
+        >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700 dark:text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
+
+      {/* Top Games Slider - Using the new TopGameCard component */}
+      <div
+        ref={topGamesRef}
+        className="flex space-x-4 sm:space-x-6 overflow-x-auto scroll-smooth scrollbar-hide pb-6"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
+        {topGames.map((game: GameInfo, index) => (
+          <div
+            key={game.id}
+            className={`flex-shrink-0 w-64 sm:w-72 md:w-80 lg:w-96 transform transition-all duration-500 ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`}
+            style={{ transitionDelay: `${index * 50}ms` }}
+          >
+            <TopGameCard game={game} index={index} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
                 {/* Regular Category Sections */}
                 {categories.map((category, categoryIndex) => {
